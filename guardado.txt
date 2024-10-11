@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ETIQUETAS PARA AUTOPERFORANTES</title>
+    <style>
+        /* Estilos existentes */
+        body { font-family: Arial, sans-serif; font-size: 16px; margin: 0; padding: 0; }
+        .etiqueta { border: 1px solid #ccc; padding: 10px; margin: 5px; display: inline-block; text-align: center; }
+        .etiqueta h2 { margin: 0; font-size: 16px; }
+        /* Otros estilos omitidos por brevedad */
+    </style>
+</head>
+<body>
+    <h1>Generador de Etiquetas</h1>
+
+    <form method="post" action="">
+        <fieldset>
+            <legend>Datos de la Etiqueta</legend>
+            <div id="entradas">
+                <div class="entrada">
+                    <label for="codigo">Ingrese código:</label>
+                    <input type="text" name="entradas[0][codigo]" required>
+                    <label for="cantidad">Cantidad de etiquetas:</label>
+                    <input type="number" name="entradas[0][cantidad_etiquetas]" required min="1">
+                </div>
+            </div>
+            <button type="button" onclick="agregarEntrada()">Agregar más</button>
+            <input type="submit" value="Generar Etiquetas">
+        </fieldset>
+    </form>
+
+    <script>
+        function agregarEntrada() {
+            const entradasDiv = document.getElementById('entradas');
+            const index = entradasDiv.children.length;
+            const nuevaEntrada = document.createElement('div');
+            nuevaEntrada.className = 'entrada';
+            nuevaEntrada.innerHTML = `
+                <label for="codigo">Ingrese código:</label>
+                <input type="text" name="entradas[${index}][codigo]" required>
+                <label for="cantidad">Cantidad de etiquetas:</label>
+                <input type="number" name="entradas[${index}][cantidad_etiquetas]" required min="1">
+            `;
+            entradasDiv.appendChild(nuevaEntrada);
+        }
+    </script>
+
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $servername = "localhost";
+        $username = "Francisco1234";
+        $password = "1234";
+        $dbname = "productos";
+        
+        $conn = new mysqli($servername, $username, $password, $dbname);
+        
+        if ($conn->connect_error) {
+            die("Conexión fallida: " . $conn->connect_error);
+        }
+
+        $entradas = $_POST['entradas'];
+        foreach ($entradas as $entrada) {
+            $codigo = mysqli_real_escape_string($conn, $entrada['codigo']);
+            $cantidadEtiquetas = intval($entrada['cantidad_etiquetas']);
+            
+            if ($cantidadEtiquetas > 0) {
+                $sql = "SELECT * FROM productos WHERE codigo = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("s", $codigo);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        for ($i = 0; $i < $cantidadEtiquetas; $i++) {
+                            echo "<div class='etiqueta'>";
+                            echo "<h2 class='codigo'>Código: {$row['codigo']}</h2>";
+                            echo "<p class='descripcion'>Descripción: {$row['descripcion']}</p>";
+                            echo "<p class='cantidad'>Cantidad: $cantidadEtiquetas</p>";
+                            echo "<p class='total'>Precio Uni.: $ {$row['precio_total']}</p>";
+                            echo "<p class='codigo-barra barcode'>*{$row['codigo']}*</p>";
+                            echo "<script>JsBarcode('.codigo-barra', '{$row['codigo']}', { format: 'CODE39' });</script>";
+                            echo "</div>";
+                        }
+                    }
+                } else {
+                    echo "No se encontró ningún producto con el código: $codigo.";
+                }
+            }
+        }
+        $conn->close();
+    }
+    ?>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Búsqueda y Consulta de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff81;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container {
+            width: 45%;
+            margin: 10px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            box-sizing: border-box;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-container h1 {
+            color: #336699;
+            font-size: 24px;
+            text-align: center;
+            margin: 0;
+            margin-bottom: 15px;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .form-container input[type="text"] {
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+
+        .styled-button {
+            background-color: #336699;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .styled-button:hover {
+            background-color: #1c4966;
+        }
+
+        .search-button {
+            display: inline-block;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .video-iframe {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        h1 {
+            color: #336699;
+            font-size: 24px;
+            text-align: center;
+            margin: 0;
+            margin-bottom: 15px;
+            background-color: rgba(255, 255, 255, 0.8); /* Fondo translúcido */
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .current-time {
+            color: yellow;
+            font-size: 36px;
+            text-align: right;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="video-background">
+        <div class="video-container">
+            <iframe class="video-iframe" src="https://www.youtube.com/embed/4kLviL8XwAI?autoplay=1&mute=1&loop=1&playlist=4kLviL8XwAI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+    </div>
+    <div class="current-time">
+        <script>
+            function updateCurrentTime() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const currentTime = `${hours}:${minutes}:${seconds}`;
+                document.getElementById('current-time').textContent = currentTime;
+            }
+            setInterval(updateCurrentTime, 1000);
+        </script>
+        <span id="current-time"></span>
+    </div>
+    <h1 style="background-color: white;">Búsqueda de Productos Rodyper</h1>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <div class="form-container left">
+            <!-- Formulario de Consulta por Código -->
+            <h1>Busqueda por Código</h1>
+            <form method="POST" action="consultar_precio.php">
+                <label for="codigo">Código del producto:</label>
+                <input type="text" id="codigo" name="codigo" required>
+                <input class="styled-button" type="submit" value="Consultar">
+            </form>
+        </div>
+
+        <div class="form-container right">
+            <!-- Formulario de Búsqueda por Descripción -->
+            <h1>Busqueda por Descripción</h1>
+            <form action="buscar.php" method="GET">
+                <label for="buscar_descripcion">Buscar por Descripción:</label>
+                <input type="text" id="buscar_descripcion" name="descripcion" required>
+                <div class="search-button">
+                    <button class="styled-button" type="submit">Buscar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="https://web.whatsapp.com/" class="styled-button" target="_blank">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@4.22.0/icons/whatsapp.svg" alt="WhatsApp Web" width="20" height="20" style="vertical-align: middle; margin-right: 5px;">
+            WhatsApp Web
+        </a>
+        <!-- Agregar botón para Administración de Productos -->
+        <a href="../consulta/administracion/index.php" class="styled-button">
+            Administración de Productos
+        </a>
+    </div>
+</body>
+</html>
